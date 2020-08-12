@@ -1,0 +1,206 @@
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Blue Team Chat</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+    <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="amazon-connect-chat-interface.js"></script>
+</head>
+
+<body background="/Screenshot (2).png">
+
+    <style>
+        #ccpContainer {
+            width: 200px;
+            height: 525px;
+            overflow: hidden;
+            float: left;
+            margin-left: 22px;
+            padding: 10px;
+
+        }
+
+        nav {
+            width: 690px;
+        }
+
+        .section-main {
+
+            padding: 10px;
+            max-width: 669px;
+            height: 511px;
+            margin-left: 22px;
+            float: left;
+            overflow: auto;
+            /* width: 100%;
+            height: 100%; */
+            position: absolute;
+            /* top: 0; */
+            display: table-cell;
+            left: 0;
+
+        }
+
+        .section-chat {
+
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            /* top: 0; */
+            left: 710px;
+            display: table-cell;
+            padding: 3px;
+            max-width: 365px;
+            height: 525px;
+            margin-left: 3px;
+            float: left;
+            overflow: auto;
+            border-radius: 5px 5px 45px 5px;
+
+        }
+
+        #root {
+            overflow: auto;
+
+        }
+
+        #root>div {
+            overflow-y: auto;
+            overflow-x: hidden;
+            width: 330px;
+            height: 485px;
+            font-size: 14px;
+        }
+
+
+        #contactDetails{
+            position: absolute;
+            bottom: 100px;
+            right: 100px;
+        }
+        .centered {
+            text-align: center;
+        }
+
+        .header-wrapper {
+            background-color: #3F5773;
+            text-align: center;
+            padding: 10px;
+            color: #fff;
+            border-radius: 3px;
+        }
+                                
+        .welcome-text { 
+            margin: 10px;
+            padding-right: 40px;
+            padding-left: 10px;
+            display: inline;
+        }
+
+        .footer-actions {
+            background: #eee;
+            height: 85px;
+        }
+
+        .button-wrapper {
+            display: flex;
+            justify-content: center;
+            flex-direction: row;
+            height: 100%;
+            align-items: center;
+            border-radius: 5px;
+        }
+
+        .button-wrapper > button {
+            min-width: 85px;
+            margin: 6px;
+            font-weight: bold;
+        }
+
+    </style>
+
+    <div>
+        <section class="section-main" id="section-main" style="position: absolute; float: right; width: 50%; border: none; padding-top: 180px; padding-right: 60px;">
+            <!-- <header>
+                <h1>MACS Customer Chat Interface</h1>
+            </header> -->
+
+            <form name="contactDetails" id="contactDetails" style="padding-top: 30px; border: none; float:right ; outline: none; position: absolute;">
+                <fieldset style="border: none;">
+                    <input type="image" src = 'widget.png' style="padding-right: 10px; padding-top: 50px; height: 40%; width: 40%; float: left; object-fit: cover; outline: none; border: none;" class="submit" id="startChat"
+                    value="Start Chat" ></input>
+                </fieldset>
+            </form>
+
+        </section>
+
+        
+        <section class="section-chat" id="section-chat" style="display: none; float: right; width: 50%;">
+            <div id="root"></div>
+        </section>
+    </div>
+    
+    <script>
+        $(document).ready((a) => {
+                connect.ChatInterface.init({
+                    containerId: 'root',
+                    headerConfig: {
+                        isHTML: true,
+                        render: () => {
+                            return  (`
+                                <div class="header-wrapper">
+                                    <h2 id="chatDescription">YU ADMISSIONS CHAT</h2>
+                                </div>
+                            `)
+                        }
+                    }
+                });
+            });
+
+        $(function () {
+            $('#contactDetails').submit(function (e) {
+                e.preventDefault();
+
+                
+                    var contactFlowId = ; // TODO: Fill in
+                    var instanceId = ; // TODO: Fill in
+                    var apiGatewayEndpoint = " ; // TODO: Fill in with the API Gateway endpoint created by your CloudFormation template
+
+                    document.getElementById("contactDetails").reset();
+
+                    connect.ChatInterface.initiateChat({
+                        name: "Client",
+                        region: "us-east-1", // TODO: Fill in
+                        apiGatewayEndpoint: apiGatewayEndpoint,
+                        contactAttributes: JSON.stringify({
+                            "customerName": "customerName"
+                        }),
+                        contactFlowId: contactFlowId,
+                        instanceId: instanceId
+                    },successHandler, failureHandler);
+            });
+        });
+
+        function successHandler(chatSession) {
+            console.log("success!");
+            $('#section-chat').fadeIn(400);
+            
+            chatSession.onChatDisconnected(function(data) {
+                $('#section-chat').hide('slide');
+            });
+        }
+
+        function failureHandler(error) {
+            console.log("There was an error: ");
+            console.log(error);
+        }
+        
+    </script>
+
+</body>
+</html>

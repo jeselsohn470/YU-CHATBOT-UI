@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<meta charset="UTF-8">
+<html>
+  <head>
+    <script type="text/javascript" src="amazon-connect-streams-master/amazon-connect-1.4.9-1-gf9242a0.js"></script>
+    <script src = "amazon-connect-chat.js"></script>
+    <script src="https://sdk.amazonaws.com/js/aws-sdk-2.716.0.min.js"></script>
+
+  </head>
+  <!-- Add the call to init() as an onload so it will only run once the page is loaded -->
+  <body onload="init()">
+    <div style="float: left; width: 400px;">
+      <table style="width: 400;">
+        <tr>
+          <td>
+            <div id=containerDiv style="float: left; width: 400px;height: 600px;"></div>
+          </td>
+        </tr>
+      </table>
+    </div>
+    
+    
+     
+    </div>
+    <div style="float: left; padding-left: 10px; height: 600px;">
+      <table>
+        <tr>
+          <th>
+            <button id = "getButton"  style="float: right;" >Get Previous Transcripts</button>
+
+          </th>
+          <td>
+            <form>
+              <select id = "currentContacts">
+                <option>--Select a Current Contact--</option>
+                <option id = "contact1">NA</option>
+                <option id = "contact2">NA</option>
+                <option id = "contact3">NA</option>
+              </select>
+            </form>
+            
+          </td>
+        </tr>
+        <tr>
+          <th style="padding-right: 105px;">
+            <button id = "getSearch"  style="float: right;" >Search</button>
+          </th>
+          <td>
+            <input type="search" id = 'searchmail'>
+          </td> 
+           
+        </tr>
+      </table>
+
+      <table>
+        
+        <tr>
+          <td>
+            <textarea id = "transcriptdisp" style="width: 360px; height: 280px;"></textarea>
+          </td>
+        
+        </tr>
+        <tr>
+          <td>
+            <textarea id = "notesdisp" style="width: 360px; height: 280px;"></textarea>
+          </td>
+        </tr>
+          
+      </table>
+      
+      
+    </div>
+    <div style="float: right; padding-left: 10px;">
+      <table>
+        
+        <th>
+          <button id = 'subButton' style="float: right;" >Submit For Current User</button>
+        </th>
+        <th>
+          <button id = 'subSearch' style="float: right;" >Submit For:</button>
+        </th>
+        <th>
+          <input type="search" id = 'email' style="width: 150px;">
+        </th>
+      </table>
+      <textarea id = "notes" style="width: 390px; height: 570px;"></textarea>
+    </div>
+    
+    <script>
+    </script>
+
+    <script type="text/javascript">
+      var email;
+      var name;
+      var instanceURL = //TODO Fill In;
+      // initialise the streams api
+      function init() {
+        // initialize the ccp
+        connect.core.initCCP(containerDiv, {
+          ccpUrl: instanceURL,            // REQUIRED
+          loginPopup: true,               // optional, defaults to `true`
+          loginPopupAutoClose: true,
+          region: "us-east-1",         // REQUIRED for `CHAT`, optional otherwise
+          softphone: {                    // optional
+            allowFramedSoftphone: true,   // optional
+            disableRingtone: false,       // optional
+            ringtoneUrl: "./ringtone.mp3" // optional
+           }
+         });
+      }
+    </script>
+
+    <script>
+      var list = document.getElementById('currentContacts');
+      list.addEventListener('click', load, false);
+      function load(){
+        
+        var agent = new connect.Agent();
+        var contacts = agent.getContacts(connect.ContactType.CHAT);
+        reset();
+        document.getElementById('contact1').value = contacts[0].getAttributes().EmailAddress.value;
+        document.getElementById('contact1').innerHTML = contacts[0].getAttributes().FirstName.value + " " + contacts[0].getAttributes().LastName.value;
+        
+        document.getElementById('contact2').value = contacts[1].getAttributes().EmailAddress.value;
+        document.getElementById('contact2').innerHTML = contacts[1].getAttributes().FirstName.value + " " + contacts[1].getAttributes().LastName.value;
+        
+        document.getElementById('contact3').value = contacts[2].getAttributes().EmailAddress.value;
+        document.getElementById('contact3').innerHTML = contacts[2].getAttributes().FirstName.value + " " + contacts[2].getAttributes().LastName.value;
+        
+      }
+      function reset(){
+        var agent = new connect.Agent();
+        var contacts = agent.getContacts(connect.ContactType.CHAT);
+        if(contacts[0] == undefined){
+          document.getElementById('contact1').value = "NA";
+          document.getElementById('contact1').innerHTML = "NA";
+        };
+        if(contacts[1] == undefined){
+          document.getElementById('contact2').value = "NA";
+          document.getElementById('contact2').innerHTML = "NA";
+        };
+        if(contacts[2] == undefined){
+          document.getElementById('contact3').value = "NA";
+          document.getElementById('contact1').innerHTML = "NA";
+        };
+      }
+    </script>
+
+    <script>
+    </script>
+
+    <script src = 'get_transcriptandnotes.js'></script>
+    <script src = 'submit_notes.js'></script>
+    
+
+  </body>
+</html>
